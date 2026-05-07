@@ -1,0 +1,344 @@
+{% extends "layout.html" %}
+{% block title %}Historial IMC{% endblock %}
+
+{% block extra_styles %}
+.page-header {
+  padding: 3rem 1.5rem 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.page-header h2 {
+  font-family: 'Open Sans', sans-serif;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.page-header h2 em {
+  font-family: 'Open Sans', sans-serif;
+  font-style: italic;
+  color: var(--accent);
+}
+
+.page-header p { color: var(--muted); margin-top: 0.4rem; }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto 2rem;
+  padding: 0 1.5rem;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.2rem 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.stat-value {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.stat-label {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-top: 0.3rem;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto 2rem;
+  padding: 0 1.5rem;
+}
+
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.chart-title {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.table-section {
+  max-width: 900px;
+  margin: 0 auto 3rem;
+  padding: 0 1.5rem;
+}
+
+.section-title {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.table-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+thead {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  padding: 0.9rem 1.2rem;
+  text-align: left;
+}
+
+td {
+  padding: 0.85rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(82,183,136,0.04); }
+
+.badge {
+  display: inline-block;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 100px;
+  color: white;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--muted);
+}
+
+.empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+.empty-state p { font-size: 0.95rem; }
+.empty-state a {
+  display: inline-block;
+  margin-top: 1rem;
+  color: var(--accent);
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (max-width: 600px) {
+  .charts-grid { grid-template-columns: 1fr; }
+  table { font-size: 0.78rem; }
+  th, td { padding: 0.6rem 0.8rem; }
+}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h2>Historial de Mediciones</h2>
+  <p>Registro de todos los cálculos de IMC realizados</p>
+</div>
+<section style="background: white; padding: 2rem; margin-top: 2rem;  text-align: center;">
+    <h3 style="color: var(--unad-blue);">Evaluación de la Acción Solidaria</h3>
+    <p>Tu opinión nos ayuda a medir el impacto de este proyecto en la comunidad.</p>
+    <a href="https://forms.gle/B8RadDHUAZxhUfAi9" target="_blank" 
+       style="background: var(--unad-blue); color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px;">
+        Realizar Encuesta de Satisfacción
+    </a>
+</section>
+<!-- Stats -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-value">{{ stats.total or 0 }}</div>
+    <div class="stat-label">Total mediciones</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ stats.promedio_imc or '—' }}</div>
+    <div class="stat-label">IMC promedio</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ stats.min_imc or '—' }}</div>
+    <div class="stat-label">IMC mínimo</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ stats.max_imc or '—' }}</div>
+    <div class="stat-label">IMC máximo</div>
+  </div>
+</div>
+
+{% if measurements %}
+<!-- Gráficas -->
+<div class="charts-grid">
+  <div class="chart-card">
+    <div class="chart-title">Distribución por categoría</div>
+    <canvas id="pieChart" height="200"></canvas>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Últimas 20 mediciones</div>
+    <canvas id="lineChart" height="200"></canvas>
+  </div>
+</div>
+
+<!-- Tabla -->
+<div class="table-section">
+  <div class="section-title">Registro completo</div>
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+        <!--  <th>Nombre</th> -->
+          <th>Edad</th>
+          <th>Peso</th>
+          <th>Altura</th>
+          <th>IMC</th>
+          <th>Categoría</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in measurements %}
+        <tr>
+          <td style="color: var(--muted); font-family: 'Open Sans', sans-serif; font-size: 0.75rem;">{{ loop.index }}</td>
+          <td>{{ m.edad }} años</td>
+          <td>{{ m.peso }} kg</td>
+          <td>{{ m.altura }} m</td>
+          <td style="font-family: 'Open Sans', sans-serif; font-weight: 700; font-size: 1rem;">{{ m.imc }}</td>
+          <td>
+            <span class="badge" style="background: {{ 
+              '#60a5fa' if m.categoria == 'Bajo peso' else
+              '#4ade80' if m.categoria == 'Peso normal' else
+              '#fbbf24' if m.categoria == 'Sobrepeso' else
+              '#f97316' if m.categoria == 'Obesidad grado I' else
+              '#f87171' if m.categoria == 'Obesidad grado II' else '#dc2626'
+            }}">{{ m.categoria }}</span>
+          </td>
+          <td style="color: var(--muted); font-size: 0.82rem;">{{ m.fecha }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+// Datos para gráficas desde Jinja
+const categoriasData = {{ stats.categorias | tojson }};
+const mediciones = {{ measurements | tojson }};
+
+// Gráfica de torta - distribución categorías
+const pieCtx = document.getElementById('pieChart').getContext('2d');
+new Chart(pieCtx, {
+  type: 'doughnut',
+  data: {
+    labels: categoriasData.map(c => c.categoria),
+    datasets: [{
+      data: categoriasData.map(c => c.cantidad),
+      backgroundColor: ['#60a5fa','#4ade80','#fbbf24','#f97316','#f87171','#dc2626'],
+      borderWidth: 2,
+      borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: { font: { family: 'Open Sans', size: 11 }, padding: 10 }
+      }
+    }
+  }
+});
+
+// Gráfica de línea - últimas 20 mediciones (orden cronológico)
+const last20 = [...mediciones].reverse().slice(0, 20);
+const lineCtx = document.getElementById('lineChart').getContext('2d');
+new Chart(lineCtx, {
+  type: 'line',
+  data: {
+    labels: last20.map((m, i) => m.fecha.split(' ')[0] ),
+    datasets: [{
+      label: 'Historial IMC',
+      data: last20.map(m => m.imc),
+      borderColor: '#2d6a4f',
+      backgroundColor: 'rgba(45,106,79,0.08)',
+      borderWidth: 2.5,
+      pointBackgroundColor: last20.map(m =>
+        m.imc < 18.5 ? '#60a5fa' :
+        m.imc < 25 ? '#4ade80' :
+        m.imc < 30 ? '#fbbf24' : '#f87171'
+      ),
+      pointRadius: 5,
+      tension: 0.3,
+      fill: true
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: {
+        min: 10, max: 45,
+        grid: { color: 'rgba(0,0,0,0.05)' },
+        ticks: { font: { family: 'Open Sans', size: 10 } }
+      },
+      x: {
+        ticks: { font: { family: 'Open Sans', size: 10 }, maxRotation: 35 },
+        grid: { display: false }
+      }
+    }
+  }
+});
+</script>
+
+{% else %}
+<div class="table-section">
+  <div class="table-card">
+    <div class="empty-state">
+    
+      <p>Aún no hay mediciones registradas.</p>
+      <a href="/">← Ir a calcular tu IMC</a>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

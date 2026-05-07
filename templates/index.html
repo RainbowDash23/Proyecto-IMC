@@ -1,0 +1,575 @@
+{% extends "layout.html" %}
+{% block title %}Calculadora IMC{% endblock %}
+
+{% block extra_styles %}
+.hero {
+  padding: 4rem 1.5rem 2rem;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.hero-tag {
+  display: inline-block;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent2);
+  background: rgba(82,183,136,0.12);
+  border: 1px solid rgba(82,183,136,0.3);
+  padding: 0.35rem 1rem;
+  border-radius: 100px;
+  margin-bottom: 1.2rem;
+}
+
+h1 {
+  font-family: 'Open Sans', sans-serif;
+  font-size: clamp(2.2rem, 6vw, 3.8rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 1rem;
+}
+
+h1 em {
+  font-family: 'Open Sans', sans-serif;
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero p {
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2.5rem;
+  max-width: 520px;
+  margin: 2rem auto;
+  box-shadow: var(--shadow);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-group.full { grid-column: 1 / -1; }
+
+label {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+input, select {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  width: 100%;
+}
+
+input:focus, select:focus {
+  border-color: var(--accent2);
+  box-shadow: 0 0 0 3px rgba(82,183,136,0.15);
+}
+
+.unit-toggle {
+    display: flex;
+    background: #e2e8f0; 
+    padding: 5px;
+    border-radius: 50px;
+    width: fit-content;
+    margin: 0 auto 20px;
+}
+
+.unit-btn {
+    border: none;
+    padding: 10px 25px;
+    border-radius: 50px;
+    cursor: pointer;
+    background: transparent;
+    color: #475569;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.unit-btn.active {
+    background: #003768; 
+    color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.btn-calcular {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--accent);
+  background-color: var(--unad-orange) !important;
+  color: var(--unad-blue) !important;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+h4 {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.btn-calcular:hover {
+  background: #235c42;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(45,106,79,0.3);
+}
+
+.btn-calcular:active { transform: translateY(0); }
+
+.btn-calcular.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.result-card {
+  max-width: 520px;
+  margin: 0 auto 3rem;
+  display: none;
+  animation: slideUp 0.5s ease both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.result-header {
+  border-radius: 20px 20px 0 0;
+  padding: 2.5rem;
+  text-align: center;
+  color: white;
+  transition: background 0.5s;
+}
+
+.ods-section {
+  margin: 2rem auto;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  max-width: 520px;
+  justify-content: center;
+  background: transparent;
+}
+
+.ods-section img {
+  width: 85px;
+  height: auto;
+}
+
+.ods-section-text {
+  text-align: center;
+}
+
+.ods-section h4 {
+  margin: 0;
+  color: #3c3c3c;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.ods-section p {
+  margin: 5px 0 0;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.imc-number {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 5rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.imc-label {
+  font-size: 0.8rem;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-top: 0.3rem;
+}
+
+.imc-categoria {
+  font-family: 'Open Sans', sans-serif;
+  font-style: italic;
+  font-size: 1.4rem;
+  margin-top: 0.5rem;
+  opacity: 0.95;
+}
+
+
+.scale-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  padding: 1.5rem 2rem;
+}
+
+.scale-title {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+
+.scale-bar {
+  height: 10px;
+  border-radius: 100px;
+  background: linear-gradient(to right, #60a5fa 0%, #4ade80 20%, #fbbf24 45%, #f97316 65%, #f87171 80%, #dc2626 100%);
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.scale-marker {
+  position: absolute;
+  top: -4px;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border: 3px solid #1a1208;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  transition: left 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.65rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+
+.ai-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 20px 20px;
+  padding: 1.5rem 2rem 2rem;
+}
+
+.ai-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.ai-badge {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent2);
+  background: rgba(82,183,136,0.1);
+  border: 1px solid rgba(82,183,136,0.25);
+  padding: 0.2rem 0.7rem;
+  border-radius: 100px;
+}
+
+.ai-dot {
+  width: 8px; height: 8px;
+  background: var(--accent2);
+  border-radius: 50%;
+  animation: blink 1.5s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.ai-text {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.ai-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.dots span {
+  animation: dotBlink 1.4s infinite both;
+  font-size: 1.2rem;
+}
+.dots span:nth-child(2) { animation-delay: 0.2s; }
+.dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotBlink { 0%,80%,100% { opacity: 0; } 40% { opacity: 1; } }
+
+@media (max-width: 560px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .form-group.full { grid-column: 1; }
+  .form-card { padding: 1.5rem; margin: 1rem; }
+  .result-card { margin: 0 1rem 2rem; }
+}
+{% endblock %}
+<section style="background: var(--ods3-green); color: white; padding: 2.5rem 1rem; text-align: center; margin-bottom: -2rem;">
+    <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">ODS 3: Salud y Bienestar</h2>
+    <p style="max-width: 700px; margin: 0 auto; font-size: 1.1rem; opacity: 0.9;">
+        Garantizar una vida sana y promover el bienestar. Esta herramienta es parte del diagnóstico para fomentar hábitos saludables en la comunidad.
+    </p>
+</section>
+
+<main class="app-container" style="margin-top: 0; position: relative; z-index: 2;">
+  </main>
+{% block content %}
+<section class="hero">
+  <div class="hero-tag">Herramienta de salud y bienestar</div>
+  <h1>Calcula tu Índice de Masa Corporal</h1>
+  <p>Obtén tu IMC al instante y recibe recomendaciones personalizadas generadas por inteligencia artificial.</p>
+</section>
+
+<div class="form-card">
+  <div class="unit-toggle">
+    <button class="unit-btn active" onclick="setUnits('metric')">Métrico (kg / m)</button>
+    <button class="unit-btn" onclick="setUnits('imperial')">Imperial (lb / in)</button>
+  </div>
+  <div class="form-grid">
+    <div class="form-group full">
+      
+    </div>
+
+    <div class="form-group">
+      <label>Peso (<span id="pesoUnit">kg</span>)</label>
+      <input type="number" id="peso" placeholder="70" min="1" step="0.1" />
+    </div>
+
+    <div class="form-group">
+      <label>Altura (<span id="alturaUnit">m</span>)</label>
+      <input type="number" id="altura" placeholder="1.70" min="0.1" step="0.01" inputmode="decimal" />
+    </div>
+     
+    <div class="form-group">
+      <label>Edad (años)</label>
+      <input type="number" id="edad" placeholder="25" min="1" max="120" />
+    </div>
+
+    <div class="form-group">
+      <label>Sexo</label>
+      <select id="sexo">
+        <option value="no especificado">Prefiero no decir</option>
+        <option value="masculino">Masculino</option>
+        <option value="femenino">Femenino</option>
+      </select>
+    </div>
+  </div>
+
+  <button class="btn-calcular" id="btnCalcular" onclick="calcular()">
+    Calcular IMC
+  </button>
+</div>
+
+<div class="result-card" id="resultCard">
+  <div class="result-header" id="resultHeader">
+    <div class="imc-number" id="imcNumber">--</div>
+    <div class="imc-label">Índice de Masa Corporal</div>
+    <div class="imc-categoria" id="imcCategoria">--</div>
+  </div>
+
+  <div class="scale-container">
+    <div class="scale-title">Tu posición en la escala IMC</div>
+    <div class="scale-bar">
+      <div class="scale-marker" id="scaleMarker" style="left: 0%"></div>
+    </div>
+    <div class="scale-labels">
+      <span>Bajo<br>peso</span>
+      <span>Normal</span>
+      <span>Sobre-<br>peso</span>
+      <span>Obesidad<br>I-II-III</span>
+    </div>
+  </div>
+
+  <div class="ai-card">
+    <div class="ai-header">
+      <div class="ai-dot"></div>
+      <span class="ai-badge">Recomendación IA</span>
+    </div>
+    <div id="aiText" class="ai-loading">
+      <span>Generando recomendación</span>
+      <span class="dots"><span>.</span><span>.</span><span>.</span></span>
+    </div>
+  </div>
+</div>
+<div class="ods-section">
+    <img src="/static/ods3.jpg" alt="ODS 3">
+    <div class="ods-section-text">
+        <h4>
+            Garantizar una vida sana y promover el bienestar para todos
+        </h4>
+        <p>
+            El diagnóstico de IMC es una acción solidaria para el bienestar comunitarioss.
+        </p>
+    </div>
+</div>
+<script>
+  let currentUnits = 'metric';
+
+  function setUnits(units) {
+    currentUnits = units;
+    document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('pesoUnit').textContent = units === 'metric' ? 'kg' : 'lb';
+    document.getElementById('alturaUnit').textContent = units === 'metric' ? 'm' : 'in';
+    document.getElementById('peso').placeholder = units === 'metric' ? '70' : '154';
+    document.getElementById('altura').placeholder = units === 'metric' ? '1.70' : '67';
+  }
+
+  function imcToPercent(imc) {
+    // Mapear IMC 10-45 a 0-100%
+    const min = 10, max = 45;
+    return Math.min(Math.max(((imc - min) / (max - min)) * 100, 2), 98);
+  }
+
+  async function calcular() {
+    // const nombre = document.getElementById('nombre').value.trim() || 'Usuario';
+    const pesoVal = parseFloat(document.getElementById('peso').value);
+    const alturaVal = parseFloat(document.getElementById('altura').value);
+    const edad = parseInt(document.getElementById('edad').value);
+    const sexo = document.getElementById('sexo').value;
+    document.getElementById('altura').addEventListener('blur', function(e) {
+    let valor = e.target.value;
+    let alturaInput = document.getElementById('altura').value;
+    const alturaVal = parseFloat(alturaInput.toString().replace(',', '.'));
+    // Si el usuario escribió un número entero grande (ej. 175) y estamos en metros
+    if (currentUnits === 'metric' && valor > 3) { 
+        e.target.value = (valor / 100).toFixed(2);
+    }
+    });
+    if (!pesoVal || !alturaVal || !edad) {
+      alert('Por favor completa peso, altura y edad.');
+      return;
+    }
+    
+    // Convertir a métrico si es imperial
+    let peso = pesoVal;
+    let altura = alturaVal;
+    if (currentUnits === 'imperial') {
+      peso = pesoVal * 0.453592;
+      altura = alturaVal * 0.0254;
+    }
+
+    const btn = document.getElementById('btnCalcular');
+    btn.classList.add('loading');
+    btn.textContent = 'Calculando...';
+
+    // Mostrar card con loading IA
+    const resultCard = document.getElementById('resultCard');
+    resultCard.style.display = 'block';
+    document.getElementById('aiText').innerHTML = `
+      <span class="ai-loading">
+        <span>Generando recomendación personalizada</span>
+        <span class="dots"><span>.</span><span>.</span><span>.</span></span>
+      </span>`;
+
+    resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    try {
+      const res = await fetch('/calcular', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({peso, altura, edad, sexo })
+      });
+
+      const data = await res.json();
+
+      // Actualizar resultado
+      document.getElementById('imcNumber').textContent = data.imc;
+      document.getElementById('imcCategoria').textContent = data.categoria;
+      document.getElementById('resultHeader').style.background = data.color;
+
+      // Mover marcador en escala
+      const pct = imcToPercent(data.imc);
+      document.getElementById('scaleMarker').style.left = pct + '%';
+
+      // Mostrar recomendación IA
+      document.getElementById('aiText').className = 'ai-text';
+      document.getElementById('aiText').textContent = data.recomendacion;
+
+    } catch (err) {
+      document.getElementById('aiText').textContent = 'Error al conectar con el servidor. Verifica que Flask esté corriendo.';
+    }
+
+    btn.classList.remove('loading');
+    btn.textContent = 'Calcular IMC';
+  }
+
+  // Enter para calcular
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') calcular();
+  });
+  // Auto-formateo de altura: de cm a metros
+document.getElementById('altura').addEventListener('input', function(e) {
+  let value = e.target.value;
+  
+  // Si el usuario escribe 3 dígitos sin punto (ej: 170)
+  if (value.length === 3 && !value.includes('.') && !value.includes(',')) {
+    e.target.value = (value / 100).toFixed(2);
+  }
+});
+
+// Cambiar coma por punto automáticamente si la escriben
+document.getElementById('altura').addEventListener('beforeinput', function(e) {
+  if (e.data === ',') {
+    e.preventDefault();
+    const start = this.selectionStart;
+    const end = this.selectionEnd;
+    this.value = this.value.substring(0, start) + '.' + this.value.substring(end);
+    this.selectionStart = this.selectionEnd = start + 1;
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Calculadora IMC{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=sans-serif:wght@400;600;700;800&family=Open+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+    --unad-blue: #003768;
+    --unad-orange: #F1A400;
+    --ods3-green: #4C9F38;
+    --bg: #f4f4f9;
+    --surface: #ffffff;
+    --text: #333333;
+  
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a08060' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(245,240,232,0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--accent);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-logo {
+      display: block;
+      height: 50px;
+      width: auto;
+      transform: scale(1.5);
+      transform-origin: left center;
+    }
+
+    .nav-brand .dot {
+      width: 8px; height: 8px;
+      background: var(--accent2);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .nav-links { display: flex; gap: 0.5rem; }
+
+    .nav-links a {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--accent);
+      color: #fff;
+    }
+    
+    main {
+      position: relative;
+      z-index: 1;
+    }
+    footer{
+    background-color: #003768;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    }
+
+    {% block extra_styles %}{% endblock %}
+  </style>
+</head>
+<body>
+  <nav style="background: white; border-bottom: 4px solid var(--unad-orange); padding: 1rem 5%; display: flex; align-items: center; justify-content: space-between;">
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <img class="nav-logo" src="/static/Logo_unad.png" alt="Logo UNAD">
+        <div style="border-left: 2px solid #ddd; padding-left: 15px;">
+            <h1 style="font-size: 1.1rem; color: var(--unad-blue); margin: 0;">SISSU - UNAD</h1>
+            <p style="font-size: 0.8rem; margin: 0; color: #666;">Acción Solidaria Universitaria</p>
+        </div>
+    </div>
+    <div class="nav-links">
+        <a href="/" style="color: var(--unad-blue); font-weight: bold; text-decoration: none; margin-left: 20px;">Calculadora</a>
+        <a href="/historial" style="color: var(--unad-blue); font-weight: bold; text-decoration: none; margin-left: 20px;">Resultados</a>
+    </div>
+  </nav>
+ 
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    <p>&copy; 2026 Universidad Nacional Abierta y a Distancia - UNAD</p>
+    <p>Sistema de Servicio Social Unadista</p>
+  </footer>
+</body>
+</html>
