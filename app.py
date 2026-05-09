@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, jsonify
 from database import init_db, save_measurement, get_all_measurements, get_stats
 from ai_recommendations import get_recommendation
 import os
-
+from dotenv import load_dotenv
+load_dotenv()
 app = Flask(__name__)
 
 # Inicializar base de datos al arrancar
