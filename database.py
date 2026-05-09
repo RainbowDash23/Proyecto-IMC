@@ -1,20 +1,20 @@
-import sqlite3
+import os
+import psycopg2
+from psycopg2.extras import RealDictCursor
 from datetime import datetime
 
-DB_PATH = 'imc.db'
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def get_connection():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
+    conn = psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
     return conn
-
-# database.py
 
 def init_db():
     conn = get_connection()
-    conn.execute('''
+    cur = conn.cursor()
+    cur.execute('''
         CREATE TABLE IF NOT EXISTS mediciones (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             peso REAL NOT NULL,
             altura REAL NOT NULL,
             edad INTEGER NOT NULL,
@@ -25,43 +25,51 @@ def init_db():
         )
     ''')
     conn.commit()
+    cur.close()
     conn.close()
 
 def save_measurement(peso, altura, edad, sexo, imc, categoria):
     conn = get_connection()
+    cur = conn.cursor()
     fecha = datetime.now().strftime('%Y-%m-%d %H:%M')
-    conn.execute(
-        '''INSERT INTO mediciones 
-           (peso, altura, edad, sexo, imc, categoria, fecha) 
-           VALUES (?, ?, ?, ?, ?, ?, ?)''',
+    cur.execute(
+        'INSERT INTO mediciones (peso, altura, edad, sexo, imc, categoria, fecha) VALUES (%s, %s, %s, %s, %s, %s, %s)',
         (peso, altura, edad, sexo, imc, categoria, fecha)
     )
     conn.commit()
+    cur.close()
     conn.close()
 
 def get_all_measurements():
     conn = get_connection()
-    rows = conn.execute('SELECT * FROM mediciones ORDER BY id DESC LIMIT 50').fetchall()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM mediciones ORDER BY id DESC LIMIT 50')
+    rows = cur.fetchall()
+    cur.close()
     conn.close()
     return [dict(r) for r in rows]
 
 def get_stats():
     conn = get_connection()
-    row = conn.execute('''
+    cur = conn.cursor()
+    cur.execute('''
         SELECT 
             COUNT(*) as total,
-            ROUND(AVG(imc), 2) as promedio_imc,
-            ROUND(MIN(imc), 2) as min_imc,
-            ROUND(MAX(imc), 2) as max_imc
+            ROUND(AVG(imc)::numeric, 2) as promedio_imc,
+            ROUND(MIN(imc)::numeric, 2) as min_imc,
+            ROUND(MAX(imc)::numeric, 2) as max_imc
         FROM mediciones
-    ''').fetchone()
+    ''')
+    row = cur.fetchone()
 
-    categorias = conn.execute('''
+    cur.execute('''
         SELECT categoria, COUNT(*) as cantidad
         FROM mediciones
         GROUP BY categoria
-    ''').fetchall()
+    ''')
+    categorias = cur.fetchall()
 
+    cur.close()
     conn.close()
 
     stats = dict(row) if row else {}
