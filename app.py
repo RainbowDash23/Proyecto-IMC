@@ -1,72 +1,32 @@
-from flask import Flask, render_template, request, jsonify
-from database import init_db, save_measurement, get_all_measurements, get_stats
-from ai_recommendations import get_recommendation
-import os
+"""
+Punto de entrada de la aplicación SISSU - UNAD.
+Usa el patrón application factory: create_app() ensambla la app a partir
+de sus blueprints (rutas) y la base de datos.
+"""
+from flask import Flask
 from dotenv import load_dotenv
-load_dotenv()
-app = Flask(__name__)
 
-# Inicializar base de datos al arrancar
-init_db()
+from config import Config
+from database.connection import init_db
+from routes.main_routes import main_bp
+from routes.api_routes import api_bp
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+load_dotenv()  # carga variables desde .env en desarrollo local
 
-@app.route('/historial')
-def historial():
-    measurements = get_all_measurements()
-    stats = get_stats()
-    return render_template('historial.html', measurements=measurements, stats=stats)
 
-@app.route('/calcular', methods=['POST'])
-def calcular():
-    data = request.get_json()
-    
-    
-    peso = float(data.get('peso'))
-    altura = float(data.get('altura'))
-    edad = int(data.get('edad'))
-    sexo = data.get('sexo', 'no especificado')
+def create_app() -> Flask:
+    app = Flask(__name__)
 
-    # Calcular IMC
-    imc = peso / (altura ** 2)
-    imc_redondeado = round(imc, 2)
+    app.register_blueprint(main_bp)
+    app.register_blueprint(api_bp)
 
-    # Clasificación
-    if imc < 18.5:
-        categoria = 'Bajo peso'
-        color = '#60a5fa'
-    elif imc < 25:
-        categoria = 'Peso normal'
-        color = '#4ade80'
-    elif imc < 30:
-        categoria = 'Sobrepeso'
-        color = '#fbbf24'
-    elif imc < 35:
-        categoria = 'Obesidad grado I'
-        color = '#f97316'
-    elif imc < 40:
-        categoria = 'Obesidad grado II'
-        color = '#f87171'
-    else:
-        categoria = 'Obesidad grado III'
-        color = '#dc2626'
+    with app.app_context():
+        init_db()
 
-    # Obtener recomendación con IA
-    recomendacion = get_recommendation(imc_redondeado, categoria, edad, sexo, peso, altura)
+    return app
 
-    # Guardar en base de datos
-    save_measurement(peso, altura, edad, sexo, imc_redondeado, categoria)
 
-    return jsonify({
-        'imc': imc_redondeado,
-        'categoria': categoria,
-        'color': color,
-        'recomendacion': recomendacion
-    })
+app = create_app()
 
 if __name__ == '__main__':
-    import os
-    port = int(os.environ.get("PORT", 8000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(host="0.0.0.0", port=Config.PORT, debug=False)
