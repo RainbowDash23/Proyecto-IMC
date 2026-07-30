@@ -96,12 +96,8 @@ pip install -r requirements.txt
 
 **4. Configurar variables de entorno**
 
-Copia `.env.example` a `.env` y completa tus valores:
-```bash
-cp .env.example .env
-```
 
-**5. Ejecutar la aplicación**
+**5. Ejecutar la aplicación - configurar primero la conexion en localhost!**
 ```bash
 python app.py
 ```
