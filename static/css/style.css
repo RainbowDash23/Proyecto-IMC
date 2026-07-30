@@ -460,6 +460,15 @@ input:focus, select:focus {
 
 .section-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 1rem; letter-spacing: -0.01em; }
 
+.table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
+
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 .table-card {
   background: var(--surface);
   border: 1px solid var(--border);
