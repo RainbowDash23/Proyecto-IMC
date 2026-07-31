@@ -47,27 +47,53 @@ main { position: relative; z-index: 1; }
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
   position: sticky;
   top: 0;
   z-index: 100;
 }
 
-.nav-left { display: flex; align-items: center; gap: 15px; }
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-width: 0; /* permite truncar en vez de forzar overflow */
+}
 
 .nav-logo {
   display: block;
   height: 50px;
   width: auto;
+  flex-shrink: 0;
   transform: scale(1.5);
   transform-origin: left center;
 }
 
-.nav-divider { border-left: 2px solid #ddd; padding-left: 15px; }
+.nav-divider {
+  border-left: 2px solid #ddd;
+  padding-left: 15px;
+  min-width: 0;
+}
 
-.nav-title { font-size: 1.1rem; color: var(--unad-blue); margin: 0; }
-.nav-subtitle { font-size: 0.8rem; margin: 0; color: #666; }
+.nav-title {
+  font-size: 1.1rem;
+  color: var(--unad-blue);
+  margin: 0;
+  white-space: nowrap;
+}
 
-.nav-links { display: flex; gap: 0.5rem; }
+.nav-subtitle {
+  font-size: 0.8rem;
+  margin: 0;
+  color: #666;
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
 
 .nav-link {
   color: var(--unad-blue);
@@ -77,10 +103,44 @@ main { position: relative; z-index: 1; }
   padding: 0.3rem 0.6rem;
   border-radius: 8px;
   transition: background 0.2s;
+  white-space: nowrap;
 }
 
 .nav-link.active,
 .nav-link:hover { background: rgba(0, 55, 104, 0.08); }
+
+/* ---------- Nav responsive (móvil) ---------- */
+
+@media (max-width: 640px) {
+  .unad-nav {
+    padding: 0.75rem 1rem;
+    flex-wrap: nowrap; /* todo en una sola fila, sin saltos de línea */
+  }
+
+  .nav-logo {
+    height: 32px;
+    transform: scale(1.15);
+  }
+
+  .nav-divider { padding-left: 10px; }
+
+  .nav-title { font-size: 0.85rem; }
+  .nav-subtitle { display: none; } /* se oculta para dar espacio en pantallas pequeñas */
+
+  .nav-links { gap: 0; }
+
+  .nav-link {
+    margin-left: 8px;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .nav-title { font-size: 0.75rem; }
+  .nav-link { font-size: 0.72rem; margin-left: 4px; padding: 0.25rem 0.4rem; }
+  .nav-logo { height: 28px; }
+}
 
 /* ---------- Footer institucional ---------- */
 
@@ -459,15 +519,6 @@ input:focus, select:focus {
 .table-section { max-width: 900px; margin: 0 auto 3rem; padding: 0 1.5rem; }
 
 .section-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 1rem; letter-spacing: -0.01em; }
-
-.table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
-
-html, body {
-    overflow-x: hidden;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-}
 
 .table-card {
   background: var(--surface);

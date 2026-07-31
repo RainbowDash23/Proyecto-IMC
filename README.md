@@ -5,7 +5,7 @@
 Acción Solidaria Universitaria · 2026
 
 ---
-Visitar sitio web en: https://imc-unad.onrender.com/
+
 ## Descripción
 
 SISSU es una aplicación web desarrollada como parte de la iniciativa de servicio social de la UNAD, orientada a brindar herramientas de salud preventiva a la comunidad. Este módulo permite calcular el Índice de Masa Corporal (IMC) de forma interactiva, clasificar el resultado según estándares internacionales de la OMS, y generar recomendaciones personalizadas mediante inteligencia artificial.
@@ -69,12 +69,15 @@ imc-unad/
     ├── layout.html
     ├── index.html
     └── historial.html
+```
+
+---
 
 ## Instalación y ejecución local
 
 **1. Clonar el repositorio**
 ```bash
-git clone https://github.com/RainbowDash23/Proyecto-IMC.git
+git clone https://github.com/TU_USUARIO/TU_REPOSITORIO.git
 cd imc-unad
 ```
 
@@ -94,15 +97,12 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**4. Configurar variables de entorno**
-
-
-**5. Ejecutar la aplicación - configurar primero la conexion en localhost!**
+**4. Ejecutar la aplicación:configurar config.py y ejecutar la aplicación**
 ```bash
 python app.py
 ```
 
-**6. Abrir en el navegador**
+**5. Abrir en el navegador**
 ```
 http://localhost:8000
 ```
