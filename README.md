@@ -11,7 +11,7 @@ Acción Solidaria Universitaria · 2026
 SISSU es una aplicación web desarrollada como parte de la iniciativa de servicio social de la UNAD, orientada a brindar herramientas de salud preventiva a la comunidad. Este módulo permite calcular el Índice de Masa Corporal (IMC) de forma interactiva, clasificar el resultado según estándares internacionales de la OMS, y generar recomendaciones personalizadas mediante inteligencia artificial.
 
 La aplicación registra cada medición en una base de datos PostgreSQL y ofrece un panel de historial con estadísticas y visualizaciones gráficas de los datos recopilados.
-
+Visitar sitio: https://imc-unad.onrender.com/
 ---
 
 ## Funcionalidades
