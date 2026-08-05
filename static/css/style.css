@@ -27,6 +27,9 @@ body {
   min-height: 100vh;
 }
 
+html { overflow-x: clip; }
+img { max-width: 100%; }
+
 body::before {
   content: '';
   position: fixed;
@@ -528,6 +531,23 @@ input:focus, select:focus {
   box-shadow: var(--shadow);
 }
 
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.table-scroll-hint {
+  display: none;
+  margin: 0;
+  padding: 0.6rem 1rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: center;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+}
+
 table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
 thead { background: var(--bg); border-bottom: 1px solid var(--border); }
 
@@ -572,12 +592,26 @@ tr:hover td { background: rgba(76, 159, 56, 0.04); }
 
 /* ---------- Responsive ---------- */
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
+  .page-header { padding: 2rem 1rem 1.25rem; }
+  .stats-grid { padding: 0 1rem; }
+  .charts-grid { grid-template-columns: 1fr; padding: 0 1rem; }
+  .table-section { padding: 0 1rem; }
+
+  .table-scroll-hint { display: block; }
+  .table-scroll table { min-width: 620px; white-space: nowrap; }
+
   .form-grid { grid-template-columns: 1fr; }
   .form-group.full { grid-column: 1; }
   .form-card { padding: 1.5rem; margin: 1rem; }
   .result-card { margin: 0 1rem 2rem; }
-  .charts-grid { grid-template-columns: 1fr; }
   table { font-size: 0.78rem; }
   th, td { padding: 0.6rem 0.8rem; }
+}
+
+@media (max-width: 400px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .form-card { padding: 1.25rem; margin: 0.75rem; }
+  .ods-section { padding: 1rem; }
+  .survey-section { padding: 1.5rem 1rem; }
 }
