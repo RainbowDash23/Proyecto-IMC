@@ -12,6 +12,8 @@ SISSU es una aplicación web desarrollada como parte de la iniciativa de servici
 
 La aplicación registra cada medición en una base de datos PostgreSQL y ofrece un panel de historial con estadísticas y visualizaciones gráficas de los datos recopilados.
 
+Visitar sitio: https://imc-unad.onrender.com/
+
 ---
 
 ## Funcionalidades
